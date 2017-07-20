@@ -125,7 +125,7 @@ class Board extends React.Component<BoardProps, AppState> {
   addCard(colId: string) {
     return () => {
       let newCardRef = this.columnsRef.child(colId).child("cards").push();
-      newCardRef.set({text: "", isEditing: true, userId: this.state.user.userId});
+      newCardRef.set({text: "", isEditing: true, userId: this.state.user.userId, isHidden: true});
     };
   }
 
@@ -141,9 +141,13 @@ class Board extends React.Component<BoardProps, AppState> {
     };
   }
 
-  saveCard(colId: string, cardId: string): (text: string) => void {
-    return (text: string) => {
-      this.columnsRef.child(colId).child("cards").child(cardId).update({isEditing: false, text: text});
+  saveCard(colId: string, cardId: string): (text: string, isHidden: boolean) => void {
+    return (text: string, isHidden: boolean) => {
+      this.columnsRef.child(colId).child("cards").child(cardId).update({
+        isEditing: false,
+        isHidden: isHidden,
+        text: text
+      });
     };
   }
 

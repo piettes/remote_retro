@@ -10,7 +10,7 @@ interface ColumnComponentProps {
   addCard: () => void;
   deleteCard: (colId: string, cardId: string) => (() => void);
   setEditCard: (colId: string, cardId: string) => (() => void);
-  saveCard: (colId: string, cardId: string) => (text: string) => void;
+  saveCard: (colId: string, cardId: string) => (text: string, isHidden: boolean) => void;
   user: User;
   userMap: Map<string, User>;
 }
