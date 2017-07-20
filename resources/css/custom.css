@@ -32,17 +32,32 @@
   right: 8px;
 }
 
-.card-save-button {
+.hidden-checkbox {
+  margin-left: 10px;
+  color: #FFFFFF;
 }
 
-.card-hide-link {
-  position: absolute;
-  bottom: 4px;
-  right: 10px;
+.hidden-checkbox input {
+  margin-right: -4px;
+}
+
+input[type="checkbox"]:not(:checked):focus:after,
+.checkbox input[type="checkbox"]:not(:checked):focus:after,
+.checkbox-inline input[type="checkbox"]:not(:checked):focus:after {
+  border-color: #666666;
+}
+
+.text-button {
   color: #FFFFFF;
   text-transform: uppercase;
   font-size: 11px;
   cursor: pointer;
+}
+
+.card-hide-button, .card-show-button {
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
 }
 
 .card-color-0, .card-color-12, .card-color-24 {
@@ -66,31 +81,31 @@
 }
 
 .card-color-5, .card-color-17, .card-color-29 {
-  background-color: #795548;
-}
-
-.card-color-6, .card-color-18, .card-color-30 {
   background-color: #00bcd4;
 }
 
-.card-color-7, .card-color-19, .card-color-31 {
+.card-color-6, .card-color-18, .card-color-30 {
   background-color: #673ab7;
 }
 
-.card-color-8, .card-color-20, .card-color-32 {
+.card-color-7, .card-color-19, .card-color-31 {
   background-color: #ff5722;
 }
 
-.card-color-9, .card-color-21, .card-color-33 {
+.card-color-8, .card-color-20, .card-color-32 {
   background-color: #8bc34a;
 }
 
-.card-color-10, .card-color-22, .card-color-34 {
+.card-color-9, .card-color-21, .card-color-33 {
   background-color: #e91e63;
 }
 
-.card-color-11, .card-color-23, .card-color-35 {
+.card-color-10, .card-color-22, .card-color-34 {
   background-color: #9e9e9e;
+}
+
+.card-color-11, .card-color-23, .card-color-35 {
+  background-color: #795548;
 }
 
 textarea {

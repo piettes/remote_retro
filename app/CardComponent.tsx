@@ -54,7 +54,7 @@ class CardComponent extends React.Component<CardComponentProps, any> {
         <div className={"card card-hidden card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
           {this.props.card.text}
           <i className="fa fa-pencil card-edit-icon" aria-hidden="true" onClick={this.props.setEditCard}/>
-          <span className="card-hide-link"
+          <span className="text-button card-show-button"
                 onClick={() => this.props.saveCard(this.state.text, false)}>show</span>
         </div>
     );
@@ -67,9 +67,9 @@ class CardComponent extends React.Component<CardComponentProps, any> {
             <textarea autoFocus onChange={(event: any) => this.onChangeText(event)} value={this.state.text}/>
             <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
             <form className="form-inline">
-              <Button bsSize="xs" onClick={() => this.props.saveCard(this.state.text, this.state.isHidden)}
-                      className="card-save-button">Save</Button>
-              <div className="checkbox">
+              <span onClick={() => this.props.saveCard(this.state.text, this.state.isHidden)}
+                      className="text-button">Save</span>
+              <div className="checkbox hidden-checkbox">
                 <label >
                   <input type="checkbox" value={this.state.isHidden} checked={this.state.isHidden}
                          onChange={() => this.onChangeHidden()}/> Hidden
@@ -86,7 +86,7 @@ class CardComponent extends React.Component<CardComponentProps, any> {
         <div className={"card card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
             {this.props.card.text}
             <i className="fa fa-pencil card-edit-icon" aria-hidden="true" onClick={this.props.setEditCard}/>
-            <span className="card-hide-link"
+            <span className="text-button card-hide-button"
                     onClick={() => this.props.saveCard(this.state.text, true)}>hide</span>
         </div>
     );
