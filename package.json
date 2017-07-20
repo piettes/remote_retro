@@ -1,0 +1,55 @@
+{
+  "name": "retro_tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "production": "webpack -p --config webpack.config.prod.js",
+    "dev": "webpack-dev-server -d --watch --config webpack.config.dev.js",
+    "test": "jest --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autosize": "^4.0.0",
+    "axios": "^0.16.2",
+    "bootstrap": "^3.3.7",
+    "bootswatch": "^3.3.7",
+    "firebase": "^4.1.3",
+    "jquery": "^3.2.1",
+    "react": "^15.6.1",
+    "react-bootstrap": "^0.31.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/bootstrap": "^3.3.35",
+    "@types/react": "^15.0.38",
+    "@types/react-bootstrap": "0.0.52",
+    "@types/react-dom": "^15.5.1",
+    "css-loader": "^0.28.4",
+    "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.29.0",
+    "jest": "^20.0.4",
+    "style-loader": "^0.18.2",
+    "ts-jest": "^20.0.7",
+    "ts-loader": "^2.3.0",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.3.0",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "jest": {
+    "automock": false,
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "/__tests__/.*test\\.tsx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  }
+}

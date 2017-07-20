@@ -1,0 +1,84 @@
+
+.card {
+  color: #FFFFFF;
+}
+
+.card-editable {
+  color: #000000;
+}
+
+.card, .card-editable {
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  min-height: 80px;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.card-remove-icon, .card-edit-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.card-save-button {
+}
+
+.card-container {
+  position: relative;
+}
+
+.card-color-0 {
+  background-color: #2196f3;
+}
+
+.card-color-1 {
+  background-color: #9c27b0;
+}
+
+.card-color-2 {
+  background-color: #ff9800;
+}
+
+.card-color-3 {
+  background-color: #4caf50;
+}
+
+.card-color-4 {
+  background-color: #e51c23;
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  resize: none;
+  border: 0;
+  font-size: 14px;
+}
+
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6 {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.col-1, .col-2, .col-3 {
+  width: 33%;
+}
+
+.col-4 {
+  width: 25%;
+}
+
+.col-5 {
+  width: 20%;
+}
+
+.col-6 {
+  width: 16%;
+}

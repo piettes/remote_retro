@@ -57,3 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
+/config/config.js
+/remote_retro.iml
+/retro_tool.iml
+/.idea/
