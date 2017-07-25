@@ -13,6 +13,7 @@ class Auth {
     this.setUserCallback = setUser;
   }
 
+  // TODO make it return a promise
   signIn() {
 
     firebase.auth().onAuthStateChanged((user: any) => {

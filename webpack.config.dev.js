@@ -1,5 +1,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
+var path = require("path");
 var config = require("./config/config");
 
 var HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
@@ -13,7 +14,8 @@ module.exports = {
   entry: "./app/index.tsx",
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist"
+    path: path.join(__dirname, '..', "dist"),
+    publicPath: '/'
   },
 
   // Enable sourcemaps for debugging webpack's output.

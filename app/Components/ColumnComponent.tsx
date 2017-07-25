@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Button} from "react-bootstrap";
 
-import {Card, Column, User} from "./Types";
+import {Card, Column, User} from "../Utils/Types";
 import CardComponent from "./CardComponent";
 
 interface ColumnComponentProps {

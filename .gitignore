@@ -61,3 +61,5 @@ typings/
 /remote_retro.iml
 /retro_tool.iml
 /.idea/
+
+dist/

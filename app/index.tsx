@@ -1,7 +1,7 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 
-import Board from "./Board";
+import Root from "./Components/Root";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootswatch/paper/bootstrap.css";
@@ -21,4 +21,4 @@ import "bootstrap";
 import "../resources/css/custom.css";
 
 
-ReactDOM.render(<Board boardId="bob"/>, document.getElementById("app"));
+ReactDOM.render(<Root />, document.getElementById("app"));

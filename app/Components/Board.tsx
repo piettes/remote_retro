@@ -1,44 +1,47 @@
 import * as React from "react";
-
 import {Button, Modal} from "react-bootstrap";
-import * as autosize from "autosize";
 
-import {Card, Column, User} from "./Types";
-import ColumnComponent from "./ColumnComponent";
-import Auth from "./Auth";
 import * as firebase from "firebase";
 import DataSnapshot = firebase.database.DataSnapshot;
 import Reference = firebase.database.Reference;
 
-interface AppState {
+import * as autosize from "autosize";
+
+import {Card, Column, User} from "../Utils/Types";
+import ColumnComponent from "./ColumnComponent";
+import Auth from "../Utils/Auth";
+
+interface BoardState {
   columns: Array<Column>;
   newColModalOpen: boolean;
   newColName: string;
   user: User;
-  userMap: Map<string, User>
+  userMap: Map<string, User>;
+  boardTitle: string;
 }
 
 interface BoardProps {
-  boardId: string;
+  match: any;
 }
 
 declare let process: any;
 
-class Board extends React.Component<BoardProps, AppState> {
+class Board extends React.Component<BoardProps, BoardState> {
 
   columnsRef: Reference;
   boardRef: Reference;
   auth: Auth;
 
-  constructor() {
-    super();
+  constructor(props: BoardProps) {
+    super(props);
 
     this.state = {
       columns: [],
       newColModalOpen: false,
       newColName: "",
       user: null,
-      userMap: new Map<string, User>()
+      userMap: new Map<string, User>(),
+      boardTitle: ""
     };
 
     this.openModalNewCol = this.openModalNewCol.bind(this);
@@ -50,10 +53,18 @@ class Board extends React.Component<BoardProps, AppState> {
     this.saveCard = this.saveCard.bind(this);
     this.setUser = this.setUser.bind(this);
     this.getBoardInfo = this.getBoardInfo.bind(this);
+
   }
 
   componentDidMount() {
-    this.initFirebase();
+    this.boardRef = firebase.database().ref("boards/" + this.props.match.params.id);
+
+    // TODO use promise
+    this.auth = new Auth(this.boardRef, this.setUser);
+    this.auth.signIn();
+    this.getBoardInfo();
+
+    this.columnsRef = this.boardRef.child("/columns");
   }
 
   componentDidUpdate() {
@@ -61,34 +72,13 @@ class Board extends React.Component<BoardProps, AppState> {
     autosize(c);
   }
 
-  initFirebase() {
-    let config = {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.FIREBASE_DATABASE_URL,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
-    };
-
-    firebase.initializeApp(config);
-
-    this.boardRef = firebase.database().ref("boards/" + this.props.boardId);
-
-    this.auth = new Auth(this.boardRef, this.setUser);
-    this.auth.signIn();
-
-    this.columnsRef = this.boardRef.child("/columns");
-
-  }
-
   setUser(user: User) {
     this.setState({user: user});
-    this.getBoardInfo();
   }
 
   getBoardInfo() {
     this.boardRef.on("value", (boardSnapshot: DataSnapshot) => {
+
       let columns: Array<Column> = [];
       boardSnapshot.child("columns").forEach((columnSnapshot: DataSnapshot) => {
         let col: Column = new Column(columnSnapshot.key, columnSnapshot.val().title);
@@ -117,7 +107,9 @@ class Board extends React.Component<BoardProps, AppState> {
       let userMap: Map<string, User> = new Map<string, User>();
       users.forEach((user: User) => userMap.set(user.userId, user));
 
-      this.setState({columns: columns, userMap: userMap});
+      let boardTitle: string = boardSnapshot.child("title").val();
+
+      this.setState({columns: columns, userMap: userMap, boardTitle: boardTitle});
 
     });
   }
@@ -169,9 +161,13 @@ class Board extends React.Component<BoardProps, AppState> {
     this.setState({newColModalOpen: false});
   }
 
-  renderCols() {
+  render() {
 
-    return this.state.columns.map((col: Column, index: number) => {
+    if (!this.state.user) {
+      return <div/>;
+    }
+
+    const cols = this.state.columns.map((col: Column, index: number) => {
       return <ColumnComponent key={index} column={col} colNb={this.state.columns.length}
                               addCard={this.addCard(col.id)} deleteCard={this.deleteCard}
                               setEditCard={this.setEditCard}
@@ -180,12 +176,10 @@ class Board extends React.Component<BoardProps, AppState> {
                               userMap={this.state.userMap}
       />;
     });
-  }
 
-  render() {
     return <div>
 
-      Hello Retro
+      <h3>{this.state.boardTitle}</h3>
       <br/>
       <Button bsSize="xs" bsStyle="primary" onClick={this.openModalNewCol}>
         Add column
@@ -195,9 +189,7 @@ class Board extends React.Component<BoardProps, AppState> {
       <br/>
 
       <div className="row">
-
-        {this.renderCols()}
-
+        {cols}
       </div>
 
       <Modal show={this.state.newColModalOpen} onHide={this.closeModalNewCol} bsSize="large">
