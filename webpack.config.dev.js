@@ -1,7 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
 var path = require("path");
-var config = require("./config/config");
+var config = require("./config/config.test");
 
 var HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   template: __dirname + '/app/index.html',
