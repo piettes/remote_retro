@@ -57,7 +57,7 @@ class WelcomePage extends React.Component<WelcomePageProps, any> {
           <h5>Create a new board to start</h5>
           <br/>
           <br/>
-          <form className="form-horizontal">
+          <form className="form-horizontal" action="#" onSubmit={() => this.createBoard()}>
             <fieldset>
               <div className="form-group">
                 <label htmlFor="boardName" className="col-lg-2 control-label">Board Name</label>
