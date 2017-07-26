@@ -121,8 +121,8 @@ textarea {
   float: left;
   position: relative;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .col-1, .col-2, .col-3 {
@@ -138,5 +138,10 @@ textarea {
 }
 
 .col-6 {
-  width: 16%;
+  width: 16.6%;
+}
+
+.my-row {
+  margin-left: 0;
+  margin-right: 0;
 }

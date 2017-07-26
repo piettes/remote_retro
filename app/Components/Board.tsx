@@ -179,30 +179,52 @@ class Board extends React.Component<BoardProps, BoardState> {
 
     return <div>
 
-      <h3>{this.state.boardTitle}</h3>
-      <br/>
-      <Button bsSize="xs" bsStyle="primary" onClick={this.openModalNewCol}>
-        Add column
-      </Button>
+      <div className="container">
+        <h3>{this.state.boardTitle}</h3>
+        <br/>
 
-      <br/>
-      <br/>
+        {this.state.columns.length < 6 &&
+        <Button bsSize="xs" bsStyle="primary" onClick={this.openModalNewCol}>
+          Add column
+        </Button>
+        }
 
-      <div className="row">
+        <br/>
+        <br/>
+
+      </div>
+
+      <div className="row my-row">
         {cols}
       </div>
 
-      <Modal show={this.state.newColModalOpen} onHide={this.closeModalNewCol} bsSize="large">
+      <Modal show={this.state.newColModalOpen} onHide={() => this.closeModalNewCol()} bsSize="small">
         <Modal.Header closeButton>
-          <Modal.Title>New column name</Modal.Title>
+          <Modal.Title>New Column</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input type="text" onChange={this.onChangeNewColName} value={this.state.newColName}/>
+
+
+          <form className="form-horizontal" action="#" onSubmit={() => this.addCol()}>
+
+            <div className="form-group">
+              <label htmlFor="newColName" className="col-lg-2 control-label">Name</label>
+              <div className="col-lg-9">
+                <input type="text" id="newColName" className="form-control" onChange={this.onChangeNewColName}
+                       value={this.state.newColName}
+                       autoFocus
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="col-lg-10 col-lg-offset-2">
+                <Button bsStyle="primary" type="button" onClick={() => this.addCol()}>Add</Button>
+              </div>
+            </div>
+
+          </form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.closeModalNewCol}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.addCol}>Save</Button>
-        </Modal.Footer>
       </Modal>
 
     </div>;
