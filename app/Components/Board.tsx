@@ -10,6 +10,7 @@ import * as autosize from "autosize";
 import {Card, Column, User} from "../Utils/Types";
 import ColumnComponent from "./ColumnComponent";
 import Auth from "../Utils/Auth";
+import {Ref} from "react";
 
 interface BoardState {
   columns: Array<Column>;
@@ -83,11 +84,7 @@ class Board extends React.Component<BoardProps, BoardState> {
 
         columnSnapshot.child("cards").forEach((cardSnapshot: DataSnapshot) => {
 
-          let card: Card = new Card(cardSnapshot.key,
-              cardSnapshot.val().text,
-              cardSnapshot.val().userId,
-              cardSnapshot.val().isEditing,
-              cardSnapshot.val().isHidden);
+          let card: Card = Card.fromSnapshot(cardSnapshot);
           col.addCard(card);
           return false;
         });
@@ -164,14 +161,33 @@ class Board extends React.Component<BoardProps, BoardState> {
   }
 
   askRemoveColumn(colId: string, colTitle: string) {
-    return () => {
-      this.setState({removeColumnTitle: colTitle, removeColumnId: colId, removeColumnModalOpen: true});
-    }
+    this.setState({removeColumnTitle: colTitle, removeColumnId: colId, removeColumnModalOpen: true});
   }
 
   removeColumn() {
     this.columnsRef.child(this.state.removeColumnId).remove();
     this.setState({removeColumnTitle: "", removeColumnId: "", removeColumnModalOpen: false});
+  }
+
+  importCard(targetColumnId: string) {
+    return (cardId: string, sourceColumnId: string) => {
+      if (!cardId || !sourceColumnId || !targetColumnId) {
+        console.log("DragNDrop Fail")
+        console.log("cardId", cardId);
+        console.log("sourceColumnId", sourceColumnId);
+        console.log("targetColumnId", targetColumnId);
+        return;
+      }
+      if (sourceColumnId === targetColumnId) {
+        return;
+      }
+      this.columnsRef.child(sourceColumnId).child("cards").child(cardId).once("value", (cardSnapshot: DataSnapshot) => {
+        let card: Card = Card.fromSnapshot(cardSnapshot);
+        let newCardRef: Reference = this.columnsRef.child(targetColumnId).child("cards").push();
+        card.saveInReference(newCardRef);
+      });
+      this.columnsRef.child(sourceColumnId).child("cards").child(cardId).remove();
+    }
   }
 
   render() {
@@ -180,15 +196,16 @@ class Board extends React.Component<BoardProps, BoardState> {
       return <div/>;
     }
 
-    const cols = this.state.columns.map((col: Column, index: number) => {
-      return <ColumnComponent key={index} column={col} colNb={this.state.columns.length}
-                              addCard={this.addCard(col.id)}
-                              deleteCard={(colId: string, cardId: string) => this.deleteCard(colId, cardId)}
-                              setEditCard={(colId: string, cardId: string) => this.setEditCard(colId, cardId)}
-                              saveCard={(colId: string, cardId: string) => this.saveCard(colId, cardId)}
+    const cols = this.state.columns.map((column: Column, index: number) => {
+      return <ColumnComponent key={index} column={column} colNb={this.state.columns.length}
+                              addCard={this.addCard(column.id)}
+                              deleteCard={(cardId: string) => this.deleteCard(column.id, cardId)}
+                              setEditCard={(cardId: string) => this.setEditCard(column.id, cardId)}
+                              saveCard={(cardId: string) => this.saveCard(column.id, cardId)}
                               user={this.state.user}
                               userMap={this.state.userMap}
-                              removeColumn={this.askRemoveColumn(col.id, col.title)}
+                              removeColumn={() => this.askRemoveColumn(column.id, column.title)}
+                              importCard={this.importCard(column.id)}
       />;
     });
 
@@ -249,8 +266,8 @@ class Board extends React.Component<BoardProps, BoardState> {
           <Modal.Title>Remove column "{this.state.removeColumnTitle}" ?</Modal.Title>
         </Modal.Header>
         <Modal.Footer>
-                <Button bsStyle="default" type="button" onClick={() => this.closeModalRemoveColumn()}>Cancel</Button>
-                <Button bsStyle="primary" type="button" onClick={() => this.removeColumn()}>Remove</Button>
+          <Button bsStyle="default" type="button" onClick={() => this.closeModalRemoveColumn()}>Cancel</Button>
+          <Button bsStyle="primary" type="button" onClick={() => this.removeColumn()}>Remove</Button>
         </Modal.Footer>
       </Modal>
 
@@ -260,4 +277,6 @@ class Board extends React.Component<BoardProps, BoardState> {
 
 }
 
-export default Board;
+export
+default
+Board;

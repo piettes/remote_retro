@@ -9,6 +9,7 @@ interface CardComponentProps {
   saveCard: (text: string, idHidden: boolean) => void;
   user: User;
   userMap: Map<string, User>;
+  columnId: string;
 }
 
 class CardComponent extends React.Component<CardComponentProps, any> {
@@ -30,9 +31,15 @@ class CardComponent extends React.Component<CardComponentProps, any> {
     this.setState({isHidden: !this.state.isHidden});
   }
 
+  drag(event: DragEvent) {
+    event.dataTransfer.setData("columnId", this.props.columnId);
+    event.dataTransfer.setData("cardId", this.props.card.id);
+  }
+
   renderOtherHiddenCard() {
     return (
-        <div className={"card card-other-hidden card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
+        <div
+            className={"card card-other-hidden card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
           <span unselectable>{this.props.card.text}</span>
           <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
         </div>
@@ -52,7 +59,8 @@ class CardComponent extends React.Component<CardComponentProps, any> {
 
   renderHiddenCard() {
     return (
-        <div className={"card card-hidden card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
+        <div draggable onDragStart={(event: any) => this.drag(event)}
+            className={"card card-hidden card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
           {this.props.card.text}
           <i className="fa fa-pencil card-edit-icon" aria-hidden="true" onClick={this.props.setEditCard}/>
           <span className="text-button card-show-button"
@@ -69,7 +77,7 @@ class CardComponent extends React.Component<CardComponentProps, any> {
             <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
             <form className="form-inline">
               <span onClick={() => this.props.saveCard(this.state.text, this.state.isHidden)}
-                      className="text-button">Save</span>
+                    className="text-button">Save</span>
               <div className="checkbox hidden-checkbox">
                 <label >
                   <input type="checkbox" value={this.state.isHidden} checked={this.state.isHidden}
@@ -84,11 +92,12 @@ class CardComponent extends React.Component<CardComponentProps, any> {
 
   renderCard() {
     return (
-        <div className={"card card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
-            {this.props.card.text}
-            <i className="fa fa-pencil card-edit-icon" aria-hidden="true" onClick={this.props.setEditCard}/>
-            <span className="text-button card-hide-button"
-                    onClick={() => this.props.saveCard(this.state.text, true)}>hide</span>
+        <div draggable onDragStart={(event: any) => this.drag(event)}
+             className={"card card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
+          {this.props.card.text}
+          <i className="fa fa-pencil card-edit-icon" aria-hidden="true" onClick={this.props.setEditCard}/>
+          <span className="text-button card-hide-button"
+                onClick={() => this.props.saveCard(this.state.text, true)}>hide</span>
         </div>
     );
   }

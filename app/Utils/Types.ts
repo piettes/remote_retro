@@ -1,3 +1,7 @@
+import * as firebase from "firebase";
+import DataSnapshot = firebase.database.DataSnapshot;
+import Reference = firebase.database.Reference;
+
 export class Card {
 
   text: string;
@@ -12,6 +16,18 @@ export class Card {
     this.isEditing = isEditing;
     this.userId = userId;
     this.isHidden = isHidden;
+  }
+
+  static fromSnapshot(cardSnapshot: DataSnapshot): Card {
+    return new Card(cardSnapshot.key,
+        cardSnapshot.val().text,
+        cardSnapshot.val().userId,
+        cardSnapshot.val().isEditing,
+        cardSnapshot.val().isHidden);
+  }
+
+  saveInReference(cardReference: Reference): void {
+    cardReference.set({text: this.text, isEditing: this.isEditing, userId: this.userId, isHidden: this.isHidden});
   }
 
 }
