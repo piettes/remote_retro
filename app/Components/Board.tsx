@@ -10,7 +10,7 @@ import * as autosize from "autosize";
 import {Card, Column, User} from "../Utils/Types";
 import ColumnComponent from "./ColumnComponent";
 import Auth from "../Utils/Auth";
-import {Ref} from "react";
+import Head from "./Head";
 
 interface BoardState {
   columns: Array<Column>;
@@ -63,7 +63,7 @@ class Board extends React.Component<BoardProps, BoardState> {
     this.auth.signIn();
     this.getBoardInfo();
 
-    this.columnsRef = this.boardRef.child("/columns");
+    this.columnsRef = this.boardRef.child("columns");
   }
 
   componentDidUpdate() {
@@ -172,7 +172,7 @@ class Board extends React.Component<BoardProps, BoardState> {
   importCard(targetColumnId: string) {
     return (cardId: string, sourceColumnId: string) => {
       if (!cardId || !sourceColumnId || !targetColumnId) {
-        console.log("DragNDrop Fail")
+        console.log("DragNDrop Fail");
         console.log("cardId", cardId);
         console.log("sourceColumnId", sourceColumnId);
         console.log("targetColumnId", targetColumnId);
@@ -187,6 +187,16 @@ class Board extends React.Component<BoardProps, BoardState> {
         card.saveInReference(newCardRef);
       });
       this.columnsRef.child(sourceColumnId).child("cards").child(cardId).remove();
+    }
+  }
+
+  updateTitle(title: string) {
+    this.boardRef.update({title: title});
+  }
+
+  updateColumnTitle(columnId: string) {
+    return (title: string) => {
+      this.columnsRef.child(columnId).update({title: title});
     }
   }
 
@@ -206,27 +216,24 @@ class Board extends React.Component<BoardProps, BoardState> {
                               userMap={this.state.userMap}
                               removeColumn={() => this.askRemoveColumn(column.id, column.title)}
                               importCard={this.importCard(column.id)}
+                              updateColumnTitle={(title: string) => this.updateColumnTitle(column.id)(title)}
       />;
     });
 
     return <div>
 
       <div className="container">
-        <h3>{this.state.boardTitle}</h3>
-        <br/>
 
-        {this.state.columns.length < 6 &&
-        <Button bsSize="xs" bsStyle="primary" onClick={() => this.openModalNewCol()}>
-          Add column
-        </Button>
-        }
-
-        <br/>
-        <br/>
+        <Head boardTitle={this.state.boardTitle} updateTitle={(title: string) => this.updateTitle(title)}/>
 
       </div>
 
       <div className="row my-row">
+        {this.state.columns.length < 6 &&
+        <Button className="add-column-button" bsSize="xs" bsStyle="primary" onClick={() => this.openModalNewCol()}>
+          Add column
+        </Button>
+        }
         {cols}
       </div>
 

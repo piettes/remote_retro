@@ -2,6 +2,7 @@ import * as React from "react";
 
 import {Card, Column, User} from "../Utils/Types";
 import CardComponent from "./CardComponent";
+import EditableTitle from "./EditableTitle";
 
 interface ColumnComponentProps {
   column: Column;
@@ -14,6 +15,7 @@ interface ColumnComponentProps {
   userMap: Map<string, User>;
   removeColumn: () => void;
   importCard: (cardId: string, sourceColumnI: string) => void;
+  updateColumnTitle: (title: string) => void;
 }
 
 class ColumnComponent extends React.Component<ColumnComponentProps, any> {
@@ -50,10 +52,11 @@ class ColumnComponent extends React.Component<ColumnComponentProps, any> {
         <div className={"col-" + this.props.colNb} onDrop={(event: any) => this.drop(event)}
              onDragOver={(event: any) => this.allowDrop(event)}>
 
-          <i className="fa fa-times remove-column-icon" aria-hidden="true" onClick={() => this.props.removeColumn()}/>
-          <span className="column-title"> {this.props.column.title}</span>
+          <i className="fa fa-times remove-column-icon" aria-hidden="true" onClick={this.props.removeColumn}/>
 
-          <i className="fa fa-plus add-card-icon" aria-hidden="true" onClick={() => this.props.addCard()}/>
+          <EditableTitle title={this.props.column.title} size="medium" updateTitle={this.props.updateColumnTitle}/>
+
+          <i className="fa fa-plus add-card-icon" aria-hidden="true" onClick={this.props.addCard}/>
 
           {cards}
         </div>);
