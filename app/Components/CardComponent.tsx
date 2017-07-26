@@ -34,6 +34,7 @@ class CardComponent extends React.Component<CardComponentProps, any> {
     return (
         <div className={"card card-other-hidden card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
           <span unselectable>{this.props.card.text}</span>
+          <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
         </div>
     );
   }
@@ -43,6 +44,7 @@ class CardComponent extends React.Component<CardComponentProps, any> {
         <div className={"card card-color-" + this.props.userMap.get(this.props.card.userId).userNumber}>
           <div className="card-container">
             {this.props.card.text}
+            <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
           </div>
         </div>
     );
