@@ -13,6 +13,7 @@ interface ColumnComponentProps {
   saveCard: (colId: string, cardId: string) => (text: string, isHidden: boolean) => void;
   user: User;
   userMap: Map<string, User>;
+  removeColumn: () => void;
 }
 
 class ColumnComponent extends React.Component<ColumnComponentProps, any> {
@@ -20,11 +21,6 @@ class ColumnComponent extends React.Component<ColumnComponentProps, any> {
   constructor(props: ColumnComponentProps) {
     super(props);
 
-    this.onAddCard = this.onAddCard.bind(this);
-  }
-
-  onAddCard() {
-    this.props.addCard();
   }
 
   render() {
@@ -42,11 +38,10 @@ class ColumnComponent extends React.Component<ColumnComponentProps, any> {
     return (
         <div className={"col-" + this.props.colNb}>
 
-          {this.props.column.title}
+          <i className="fa fa-times remove-column-icon" aria-hidden="true" onClick={() => this.props.removeColumn()}/>
+          <span className="column-title"> {this.props.column.title}</span>
 
-          <Button bsSize="xs" bsStyle="primary" onClick={this.onAddCard}>
-            <i className="fa fa-plus" aria-hidden="true"/>
-          </Button>
+          <i className="fa fa-plus add-card-icon" aria-hidden="true" onClick={() => this.props.addCard()}/>
 
           {cards}
         </div>);

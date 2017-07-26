@@ -25,6 +25,18 @@
   padding: 5px;
 }
 
+.add-card-icon {
+  cursor: pointer;
+  color: #2196f3;
+  margin: 0 0.5em;
+}
+
+.remove-column-icon {
+  cursor: pointer;
+  color: #e51c23;
+  margin: 0 0.5em;
+}
+
 .card-remove-icon, .card-edit-icon {
   cursor: pointer;
   position: absolute;
@@ -144,4 +156,9 @@ textarea {
 .my-row {
   margin-left: 0;
   margin-right: 0;
+}
+
+.column-title {
+  text-transform: capitalize;
+  font-weight: bold;
 }

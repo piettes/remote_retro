@@ -14,10 +14,13 @@ import Auth from "../Utils/Auth";
 interface BoardState {
   columns: Array<Column>;
   newColModalOpen: boolean;
+  removeColumnModalOpen: boolean;
   newColName: string;
   user: User;
   userMap: Map<string, User>;
   boardTitle: string;
+  removeColumnTitle: string;
+  removeColumnId: string;
 }
 
 interface BoardProps {
@@ -38,22 +41,17 @@ class Board extends React.Component<BoardProps, BoardState> {
     this.state = {
       columns: [],
       newColModalOpen: false,
+      removeColumnModalOpen: false,
       newColName: "",
       user: null,
       userMap: new Map<string, User>(),
-      boardTitle: ""
+      boardTitle: "",
+      removeColumnTitle: "",
+      removeColumnId: ""
     };
 
-    this.openModalNewCol = this.openModalNewCol.bind(this);
-    this.closeModalNewCol = this.closeModalNewCol.bind(this);
-    this.onChangeNewColName = this.onChangeNewColName.bind(this);
-    this.addCol = this.addCol.bind(this);
-    this.deleteCard = this.deleteCard.bind(this);
-    this.setEditCard = this.setEditCard.bind(this);
-    this.saveCard = this.saveCard.bind(this);
     this.setUser = this.setUser.bind(this);
-    this.getBoardInfo = this.getBoardInfo.bind(this);
-
+    // this.openModalNewCol = this.openModalNewCol.bind(this);
   }
 
   componentDidMount() {
@@ -161,6 +159,21 @@ class Board extends React.Component<BoardProps, BoardState> {
     this.setState({newColModalOpen: false});
   }
 
+  closeModalRemoveColumn() {
+    this.setState({removeColumnModalOpen: false});
+  }
+
+  askRemoveColumn(colId: string, colTitle: string) {
+    return () => {
+      this.setState({removeColumnTitle: colTitle, removeColumnId: colId, removeColumnModalOpen: true});
+    }
+  }
+
+  removeColumn() {
+    this.columnsRef.child(this.state.removeColumnId).remove();
+    this.setState({removeColumnTitle: "", removeColumnId: "", removeColumnModalOpen: false});
+  }
+
   render() {
 
     if (!this.state.user) {
@@ -169,11 +182,13 @@ class Board extends React.Component<BoardProps, BoardState> {
 
     const cols = this.state.columns.map((col: Column, index: number) => {
       return <ColumnComponent key={index} column={col} colNb={this.state.columns.length}
-                              addCard={this.addCard(col.id)} deleteCard={this.deleteCard}
-                              setEditCard={this.setEditCard}
-                              saveCard={this.saveCard}
+                              addCard={this.addCard(col.id)}
+                              deleteCard={(colId: string, cardId: string) => this.deleteCard(colId, cardId)}
+                              setEditCard={(colId: string, cardId: string) => this.setEditCard(colId, cardId)}
+                              saveCard={(colId: string, cardId: string) => this.saveCard(colId, cardId)}
                               user={this.state.user}
                               userMap={this.state.userMap}
+                              removeColumn={this.askRemoveColumn(col.id, col.title)}
       />;
     });
 
@@ -184,7 +199,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         <br/>
 
         {this.state.columns.length < 6 &&
-        <Button bsSize="xs" bsStyle="primary" onClick={this.openModalNewCol}>
+        <Button bsSize="xs" bsStyle="primary" onClick={() => this.openModalNewCol()}>
           Add column
         </Button>
         }
@@ -210,7 +225,8 @@ class Board extends React.Component<BoardProps, BoardState> {
             <div className="form-group">
               <label htmlFor="newColName" className="col-lg-2 control-label">Name</label>
               <div className="col-lg-9">
-                <input type="text" id="newColName" className="form-control" onChange={this.onChangeNewColName}
+                <input type="text" id="newColName" className="form-control"
+                       onChange={(event: any) => this.onChangeNewColName(event)}
                        value={this.state.newColName}
                        autoFocus
                 />
@@ -226,6 +242,18 @@ class Board extends React.Component<BoardProps, BoardState> {
           </form>
         </Modal.Body>
       </Modal>
+
+
+      <Modal show={this.state.removeColumnModalOpen} onHide={() => this.closeModalRemoveColumn()}>
+        <Modal.Header closeButton>
+          <Modal.Title>Remove column "{this.state.removeColumnTitle}" ?</Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+                <Button bsStyle="default" type="button" onClick={() => this.closeModalRemoveColumn()}>Cancel</Button>
+                <Button bsStyle="primary" type="button" onClick={() => this.removeColumn()}>Remove</Button>
+        </Modal.Footer>
+      </Modal>
+
 
     </div>;
   }
