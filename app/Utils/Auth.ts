@@ -1,16 +1,15 @@
 import * as firebase from "firebase";
 import DataSnapshot = firebase.database.DataSnapshot;
 import Reference = firebase.database.Reference;
-import {User} from "./Types";
 
 class Auth {
 
   boardRef: Reference;
-  setUserCallback: (user: User) => void;
+  setUserIdCallback: (authId: string) => void;
 
-  constructor(boardRef: Reference, setUser: (user: User) => void) {
+  constructor(boardRef: Reference, setUserIdCallback: (authId: string) => void) {
     this.boardRef = boardRef;
-    this.setUserCallback = setUser;
+    this.setUserIdCallback = setUserIdCallback;
   }
 
   // TODO make it return a promise
@@ -38,14 +37,14 @@ class Auth {
     });
   }
 
-  save(userId: string) {
-    console.log("userid", userId);
+  save(authId: string) {
+    console.log("user authId", authId);
     let usersRef = this.boardRef.child("/users");
     usersRef.once("value", (usersSnapshot: DataSnapshot) => {
       let userAlreadyExists: boolean = false;
       let userKey: string = "";
       usersSnapshot.forEach((userSnapShot: DataSnapshot) => {
-        if (userSnapShot.val().userId === userId) {
+        if (userSnapShot.val().authId === authId) {
           userAlreadyExists = true;
           userKey = userSnapShot.key;
         }
@@ -54,18 +53,14 @@ class Auth {
 
       if (userAlreadyExists) {
         usersRef.child("/" + userKey).once("value", (userSnapShot: DataSnapshot) => {
-          this.setUser(userId, userSnapShot.val().userNumber );
+          this.setUserIdCallback(authId);
         });
       } else {
         let userRef = usersRef.push();
-        userRef.set({userId: userId, userNumber: usersSnapshot.numChildren()});
-        this.setUser(userId, usersSnapshot.numChildren() );
+        userRef.set({authId: authId, userNumber: usersSnapshot.numChildren(), name: ""});
+        this.setUserIdCallback(authId);
       }
     });
-  }
-
-  setUser(userId: string, userNumber: number) {
-   this.setUserCallback(new User(userId, userNumber))
   }
 
 }

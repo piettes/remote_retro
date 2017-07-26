@@ -201,3 +201,10 @@ textarea {
   font-weight: bold;
   float: none;
 }
+
+.user-list li{
+  list-style: none;
+  color: #FFFFFF;
+  width: 50%;
+  text-align: center;
+}

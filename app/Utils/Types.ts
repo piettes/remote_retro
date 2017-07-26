@@ -5,29 +5,29 @@ import Reference = firebase.database.Reference;
 export class Card {
 
   text: string;
-  id: string;
+  key: string;
   isEditing: boolean;
-  userId: string;
+  userKey: string;
   isHidden: boolean;
 
-  constructor(id: string, text: string, userId: string, isEditing: boolean, isHidden: boolean) {
-    this.id = id;
+  private constructor(key: string, text: string, userKey: string, isEditing: boolean, isHidden: boolean) {
+    this.key = key;
     this.text = text;
     this.isEditing = isEditing;
-    this.userId = userId;
+    this.userKey = userKey;
     this.isHidden = isHidden;
   }
 
   static fromSnapshot(cardSnapshot: DataSnapshot): Card {
     return new Card(cardSnapshot.key,
         cardSnapshot.val().text,
-        cardSnapshot.val().userId,
+        cardSnapshot.val().userKey,
         cardSnapshot.val().isEditing,
         cardSnapshot.val().isHidden);
   }
 
   saveInReference(cardReference: Reference): void {
-    cardReference.set({text: this.text, isEditing: this.isEditing, userId: this.userId, isHidden: this.isHidden});
+    cardReference.set({text: this.text, isEditing: this.isEditing, userKey: this.userKey, isHidden: this.isHidden});
   }
 
 }
@@ -35,12 +35,12 @@ export class Card {
 export class Column {
 
   title: string;
-  id: string;
+  key: string;
   cards: Array<Card> = [];
 
-  constructor(id: string, title: string) {
+  constructor(key: string, title: string) {
     this.title = title;
-    this.id = id;
+    this.key = key;
   }
 
   addCard(card: Card): void {
@@ -50,11 +50,15 @@ export class Column {
 }
 
 export class User {
-  userId: string;
+  key: string;
+  authId: string;
   userNumber: number;
+  name: string;
 
-  constructor(userId: string, userNumber: number) {
-    this.userId = userId;
+  constructor(key: string, authId: string, userNumber: number, name: string) {
+    this.key = key;
+    this.authId = authId;
     this.userNumber = userNumber;
+    this.name = name;
   }
 }

@@ -6,6 +6,7 @@ interface EditableTitleProps {
   title: string;
   updateTitle: (title: string) => void;
   size: "medium" | "large";
+  placeHolder?: string;
 }
 
 interface EditableTitleState {
@@ -20,8 +21,8 @@ class EditableTitle extends React.Component<EditableTitleProps, EditableTitleSta
 
     this.state = {
       isEditing: false,
-      title: ""
-    }
+      title: props.title === "" ? props.placeHolder : props.title
+    };
   }
 
   switchEditTitle() {
@@ -45,7 +46,7 @@ class EditableTitle extends React.Component<EditableTitleProps, EditableTitleSta
     if (!this.state.isEditing) {
       return <div className={"editable-title-" + this.props.size}>
         <div className="editable-title-title col-lg-12"
-             onClick={(event: any) => this.switchEditTitle() }>{this.props.title}</div>
+             onClick={(event: any) => this.switchEditTitle() }>{this.state.title}</div>
       </div>
     }
     return <div className={"editable-title-" + this.props.size}>
@@ -55,7 +56,8 @@ class EditableTitle extends React.Component<EditableTitleProps, EditableTitleSta
           <label htmlFor="title-edit" className="control-label"/>
           <div className="col-lg-12">
             <input className="form-control" autoFocus type="text" id="title-edit" value={this.state.title}
-                   onChange={(event: ChangeEvent<HTMLInputElement>) => this.onChangeBoardTitle(event)}/>
+                   onChange={(event: ChangeEvent<HTMLInputElement>) => this.onChangeBoardTitle(event)}
+            />
           </div>
         </div>
 

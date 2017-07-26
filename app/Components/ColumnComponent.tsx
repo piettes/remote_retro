@@ -8,13 +8,13 @@ interface ColumnComponentProps {
   column: Column;
   colNb: number;
   addCard: () => void;
-  deleteCard: (cardId: string) => (() => void);
-  setEditCard: (cardId: string) => (() => void);
-  saveCard: (cardId: string) => (text: string, isHidden: boolean) => void;
+  deleteCard: (cardKey: string) => (() => void);
+  setEditCard: (cardKey: string) => (() => void);
+  saveCard: (cardKey: string) => (text: string, isHidden: boolean) => void;
   user: User;
   userMap: Map<string, User>;
   removeColumn: () => void;
-  importCard: (cardId: string, sourceColumnI: string) => void;
+  importCard: (cardKey: string, sourceColumnKey: string) => void;
   updateColumnTitle: (title: string) => void;
 }
 
@@ -26,9 +26,9 @@ class ColumnComponent extends React.Component<ColumnComponentProps, any> {
 
   drop(event: any) {
     event.preventDefault();
-    let cardId = event.dataTransfer.getData("cardId");
-    let sourceColumnId = event.dataTransfer.getData("columnId");
-    this.props.importCard(cardId, sourceColumnId);
+    let cardKey = event.dataTransfer.getData("cardKey");
+    let sourceColumnKey = event.dataTransfer.getData("columnKey");
+    this.props.importCard(cardKey, sourceColumnKey);
   }
 
   allowDrop(event: DragEvent) {
@@ -37,13 +37,13 @@ class ColumnComponent extends React.Component<ColumnComponentProps, any> {
 
   render() {
     const cards = this.props.column.cards.map((card: Card) => {
-      return <CardComponent key={card.id} card={card}
-                            deleteCard={this.props.deleteCard(card.id)}
-                            setEditCard={this.props.setEditCard(card.id)}
-                            saveCard={this.props.saveCard(card.id)}
+      return <CardComponent key={card.key} card={card}
+                            deleteCard={this.props.deleteCard(card.key)}
+                            setEditCard={this.props.setEditCard(card.key)}
+                            saveCard={this.props.saveCard(card.key)}
                             user={this.props.user}
                             userMap={this.props.userMap}
-                            columnId={this.props.column.id}
+                            columnKey={this.props.column.key}
       />;
     });
 
