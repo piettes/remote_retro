@@ -208,3 +208,7 @@ textarea {
   width: 50%;
   text-align: center;
 }
+
+#myChart {
+  width: 500px;
+}

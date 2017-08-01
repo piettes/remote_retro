@@ -54,11 +54,68 @@ export class User {
   authId: string;
   userNumber: number;
   name: string;
+  moodPoints: string;
 
-  constructor(key: string, authId: string, userNumber: number, name: string) {
+  constructor(key: string, authId: string, userNumber: number, name: string, moodPoints: string) {
     this.key = key;
     this.authId = authId;
     this.userNumber = userNumber;
     this.name = name;
+    this.moodPoints = moodPoints;
+  }
+}
+
+export class Colors {
+  static get(id: number): string {
+    switch (id) {
+      case 0:
+      case 12:
+      case 24:
+        return "#2196f3";
+      case 1:
+      case 13:
+      case 25:
+        return "#9c27b0";
+      case 2:
+      case 14:
+      case 26:
+        return "#ff9800";
+      case 3:
+      case 15:
+      case 27:
+        return "#4caf50";
+      case 4:
+      case 16:
+      case 28:
+        return "#e51c23";
+      case 5:
+      case 17:
+      case 29:
+        return "#00bcd4";
+      case 6:
+      case 18:
+      case 30:
+        return "#673ab7";
+      case 7:
+      case 19:
+      case 31:
+        return "#ff5722";
+      case 8:
+      case 20:
+      case 32:
+        return "#8bc34a";
+      case 9:
+      case 21:
+      case 33:
+        return "#e91e63";
+      case 10:
+      case 22:
+      case 34:
+        return "#9e9e9e";
+      case 11:
+      case 23:
+      case 35:
+        return "#795548"
+    }
   }
 }

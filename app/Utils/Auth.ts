@@ -38,7 +38,6 @@ class Auth {
   }
 
   save(authId: string) {
-    console.log("user authId", authId);
     let usersRef = this.boardRef.child("/users");
     usersRef.once("value", (usersSnapshot: DataSnapshot) => {
       let userAlreadyExists: boolean = false;

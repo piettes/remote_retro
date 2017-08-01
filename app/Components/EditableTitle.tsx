@@ -50,7 +50,7 @@ class EditableTitle extends React.Component<EditableTitleProps, EditableTitleSta
       </div>
     }
     return <div className={"editable-title-" + this.props.size}>
-      <form className="form-horizontal" action="#" onSubmit={() => this.saveBoardTitle()}>
+      <form className="form-horizontal" onSubmit={() => this.saveBoardTitle()}>
 
         <div className="form-group">
           <label htmlFor="title-edit" className="control-label"/>

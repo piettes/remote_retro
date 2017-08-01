@@ -34,7 +34,7 @@ class WelcomePage extends React.Component<WelcomePageProps, any> {
     this.addColumn(boardRef, "The Bad");
     this.addColumn(boardRef, "The Ugly");
 
-    this.props.history.push("board/" + uuid);
+    this.props.history.push("retro/" + uuid + "/board");
   }
 
   addColumn(boardRef: Reference, name: string) {

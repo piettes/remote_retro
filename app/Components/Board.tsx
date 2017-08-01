@@ -9,23 +9,20 @@ import * as autosize from "autosize";
 
 import {Card, Column, User} from "../Utils/Types";
 import ColumnComponent from "./ColumnComponent";
-import Auth from "../Utils/Auth";
-import Head from "./Head";
+import {RouteComponentProps, withRouter} from "react-router";
 
 interface BoardState {
-  columns: Array<Column>;
   newColModalOpen: boolean;
   removeColumnModalOpen: boolean;
   newColName: string;
-  user: User;
-  userMap: Map<string, User>;
-  boardTitle: string;
   removeColumnTitle: string;
   removeColumnKey: string;
 }
 
-interface BoardProps {
-  match: any;
+interface BoardProps extends RouteComponentProps<any> {
+  user: User;
+  userMap: Map<string, User>;
+  columns: Array<Column>;
 }
 
 declare let process: any;
@@ -33,36 +30,21 @@ declare let process: any;
 class Board extends React.Component<BoardProps, BoardState> {
 
   columnsRef: Reference;
-  boardRef: Reference;
-  auth: Auth;
-  userAuthId: string;
 
   constructor(props: BoardProps) {
     super(props);
 
     this.state = {
-      columns: [],
       newColModalOpen: false,
       removeColumnModalOpen: false,
       newColName: "",
-      user: null,
-      userMap: new Map<string, User>(),
-      boardTitle: "",
       removeColumnTitle: "",
       removeColumnKey: ""
     };
-
-    this.setUserAuthId = this.setUserAuthId.bind(this);
   }
 
   componentDidMount() {
-    this.boardRef = firebase.database().ref("boards/" + this.props.match.params.id);
-
-    // TODO use promise
-    this.auth = new Auth(this.boardRef, this.setUserAuthId);
-    this.auth.signIn();
-
-    this.columnsRef = this.boardRef.child("columns");
+    this.columnsRef = firebase.database().ref("boards/" + this.props.match.params.id).child("columns");
   }
 
   componentDidUpdate() {
@@ -70,54 +52,10 @@ class Board extends React.Component<BoardProps, BoardState> {
     autosize(c);
   }
 
-  setUserAuthId(authId: string) {
-    this.userAuthId = authId;
-    this.getBoardInfo();
-  }
-
-  getBoardInfo() {
-    this.boardRef.on("value", (boardSnapshot: DataSnapshot) => {
-
-      let columns: Array<Column> = [];
-      boardSnapshot.child("columns").forEach((columnSnapshot: DataSnapshot) => {
-        let col: Column = new Column(columnSnapshot.key, columnSnapshot.val().title);
-
-        columnSnapshot.child("cards").forEach((cardSnapshot: DataSnapshot) => {
-
-          let card: Card = Card.fromSnapshot(cardSnapshot);
-          col.addCard(card);
-          return false;
-        });
-
-        columns.push(col);
-        return false;
-      });
-
-      let users: Array<User> = [];
-      let currentUser: User = null;
-      boardSnapshot.child("users").forEach((usersSnapshot: DataSnapshot) => {
-        let user: User = new User(usersSnapshot.key, usersSnapshot.val().authId, usersSnapshot.val().userNumber, usersSnapshot.val().name);
-        users.push(user);
-
-        if (this.userAuthId === usersSnapshot.val().authId) {
-          currentUser = user;
-        }
-        return false;
-      });
-      let userMap: Map<string, User> = new Map<string, User>();
-      users.forEach((user: User) => userMap.set(user.key, user));
-
-      let boardTitle: string = boardSnapshot.child("title").val();
-
-      this.setState({columns: columns, userMap: userMap, boardTitle: boardTitle, user: currentUser});
-
-    });
-  }
-
   addCard(colKey: string) {
     return () => {
       let newCardRef = this.columnsRef.child(colKey).child("cards").push();
-      newCardRef.set({text: "", isEditing: true, userKey: this.state.user.key, isHidden: true});
+      newCardRef.set({text: "", isEditing: true, userKey: this.props.user.key, isHidden: true});
     };
   }
 
@@ -195,34 +133,27 @@ class Board extends React.Component<BoardProps, BoardState> {
     }
   }
 
-  updateTitle(title: string) {
-    this.boardRef.update({title: title});
-  }
-
   updateColumnTitle(columnKey: string) {
     return (title: string) => {
       this.columnsRef.child(columnKey).update({title: title});
     }
   }
 
-  updateUserName(name: string) {
-    this.boardRef.child("users").child(this.state.user.key).update({name: name});
-  }
 
   render() {
 
-    if (!this.state.user) {
+    if (!this.props.user) {
       return <div/>;
     }
 
-    const cols = this.state.columns.map((column: Column, index: number) => {
-      return <ColumnComponent key={index} column={column} colNb={this.state.columns.length}
+    const cols = this.props.columns.map((column: Column, index: number) => {
+      return <ColumnComponent key={index} column={column} colNb={this.props.columns.length}
                               addCard={this.addCard(column.key)}
                               deleteCard={(cardKey: string) => this.deleteCard(column.key, cardKey)}
                               setEditCard={(cardKey: string) => this.setEditCard(column.key, cardKey)}
                               saveCard={(cardKey: string) => this.saveCard(column.key, cardKey)}
-                              user={this.state.user}
-                              userMap={this.state.userMap}
+                              user={this.props.user}
+                              userMap={this.props.userMap}
                               removeColumn={() => this.askRemoveColumn(column.key, column.title)}
                               importCard={this.importCard(column.key)}
                               updateColumnTitle={(title: string) => this.updateColumnTitle(column.key)(title)}
@@ -231,15 +162,8 @@ class Board extends React.Component<BoardProps, BoardState> {
 
     return <div>
 
-      <Head boardTitle={this.state.boardTitle}
-            updateTitle={(title: string) => this.updateTitle(title)}
-            user={this.state.user}
-            updateUserName={(name: string) => this.updateUserName(name)}
-            userMap={this.state.userMap}
-      />
-
       <div className="row my-row">
-        {this.state.columns.length < 6 &&
+        {this.props.columns.length < 6 &&
         <Button className="add-column-button" bsSize="xs" bsStyle="primary" onClick={() => this.openModalNewCol()}>
           Add column
         </Button>
@@ -294,6 +218,4 @@ class Board extends React.Component<BoardProps, BoardState> {
 
 }
 
-export
-default
-Board;
+export default withRouter<any>(Board);;

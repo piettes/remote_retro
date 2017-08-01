@@ -1,17 +1,37 @@
 import * as React from "react";
-import {Router, Route} from "react-router";
+import {Router, Route, Switch} from "react-router";
 import createBrowserHistory from "history/createBrowserHistory";
 import * as firebase from "firebase";
+import Reference = firebase.database.Reference;
 import Board from "./Board";
 import WelcomePage from "./WelcomePage";
+import Graph from "./Graph";
+import Head from "./Head";
+import {Column, User} from "../Utils/Types";
 
 declare let process: any;
 
-class Root extends React.Component<any, any> {
+interface RootState {
+  user: User;
+  userMap: Map<string, User>;
+  columns: Array<Column>;
+}
+
+class Root extends React.Component<any, RootState> {
+
+  history: any;
 
   constructor() {
     super();
-    this.initFirebase()
+    this.initFirebase();
+
+    this.state = {
+      user: null,
+      columns: [],
+      userMap: new Map<string, User>()
+    };
+
+    this.history = createBrowserHistory();
   }
 
   initFirebase() {
@@ -27,14 +47,39 @@ class Root extends React.Component<any, any> {
     firebase.initializeApp(config);
   }
 
+  setUsers(user: User, userMap: Map<string, User>): void {
+    this.setState({user: user, userMap: userMap});
+  }
+
+  setColumns(columns: Array<Column>): void {
+    this.setState({columns: columns});
+  }
+
   render() {
 
-    const history = createBrowserHistory();
     return (
-        <Router history={history}>
+        <Router history={this.history}>
           <div>
             <Route exact path="/" component={WelcomePage}/>
-            <Route path="/board/:id" component={Board}/>
+
+            <Route path="/retro/:id" render={(props: any) =>
+                <Head setUsers={(user: User, userMap: Map<string, User>) => this.setUsers(user, userMap)}
+                      setColumns={(columns: Array<Column>) => this.setColumns(columns)}
+                />
+            }
+            />
+            <Switch>
+              <Route path="/retro/:id/board" render={(props: any) =>
+                  <Board user={this.state.user}
+                         userMap={this.state.userMap}
+                         columns={this.state.columns}
+                  />
+              }/>
+              <Route path="/retro/:id/graph" render={(props: any) =>
+                  <Graph user={this.state.user}
+                         userMap={this.state.userMap}/>
+              }/>
+            </Switch>
           </div>
         </Router>
     );
