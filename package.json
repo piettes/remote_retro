@@ -26,6 +26,7 @@
     "react-router-dom": "^4.1.2"
   },
   "devDependencies": {
+    "@types/autosize": "^3.0.4",
     "@types/axios": "^0.14.0",
     "@types/bootstrap": "^3.3.35",
     "@types/chart.js": "^2.6.1",

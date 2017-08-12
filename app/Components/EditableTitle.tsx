@@ -45,7 +45,7 @@ class EditableTitle extends React.Component<EditableTitleProps, EditableTitleSta
   render() {
     if (!this.state.isEditing) {
       return <div className={"editable-title-" + this.props.size}>
-        <div className="editable-title-title col-lg-12"
+        <div className="editable-title-title"
              onClick={(event: any) => this.switchEditTitle() }>{this.state.title}</div>
       </div>
     }

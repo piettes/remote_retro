@@ -127,7 +127,7 @@ class Board extends React.Component<BoardProps, BoardState> {
       this.columnsRef.child(sourceColumnKey).child("cards").child(cardKey).once("value", (cardSnapshot: DataSnapshot) => {
         let card: Card = Card.fromSnapshot(cardSnapshot);
         let newCardRef: Reference = this.columnsRef.child(targetColumnKey).child("cards").push();
-        card.saveInReference(newCardRef);
+        card.save(newCardRef);
       });
       this.columnsRef.child(sourceColumnKey).child("cards").child(cardKey).remove();
     }

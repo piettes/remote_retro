@@ -34,6 +34,8 @@ class Graph extends React.Component<GraphProps, any> {
     this.chartIsInit = false;
 
     this.usersRef = firebase.database().ref("boards/" + this.props.match.params.id).child("users");
+
+    this.state = {isHidden: true}
   }
 
   componentDidUpdate() {
@@ -65,7 +67,9 @@ class Graph extends React.Component<GraphProps, any> {
   };
 
   getDataSets(): Array<any> {
-    return Array.from(this.props.userMap.values()).map((user: User) => {
+    return Array.from(this.props.userMap.values())
+    .filter((user: User) => user.authId === this.props.user.authId || !user.hideMood)
+    .map((user: User) => {
       return {
         fill: false,
         data: user.moodPoints ? user.moodPoints.split(",").map((el: string) => parseInt(el)) : this.emptyMood,
@@ -84,8 +88,7 @@ class Graph extends React.Component<GraphProps, any> {
     this.chartIsInit = true;
     let ctx = this.canvas.getContext("2d");
 
-    this.mood = this.props.user.moodPoints ?
-        this.props.user.moodPoints.split(",").map((el: string) => parseInt(el)) : this.emptyMood;
+    this.mood = this.props.user.moodPoints.split(",").map((el: string) => parseInt(el));
 
     this.chart = new Chart(ctx, {
       type: 'line',
@@ -115,6 +118,11 @@ class Graph extends React.Component<GraphProps, any> {
     });
   }
 
+
+  onChangeHidden() {
+    this.usersRef.child(this.props.user.key).update({hideMood: !this.props.user.hideMood});
+  }
+
   render() {
     if (!this.props.user) {
       return <div/>;
@@ -124,13 +132,18 @@ class Graph extends React.Component<GraphProps, any> {
       this.chart.data.datasets = this.getDataSets();
       this.chart.update();
     }
-
     const style = {
       width: "800px",
     };
 
     return <div style={style}>
       <canvas id="myChart"></canvas>
+      <div className="checkbox">
+        <label >
+          <input type="checkbox" value={this.props.user.hideMood.toString()} checked={this.props.user.hideMood}
+                 onChange={() => this.onChangeHidden()}/> Hidden
+        </label>
+      </div>
     </div>
   }
 }

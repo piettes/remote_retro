@@ -57,7 +57,7 @@ class Head extends React.Component<HeadProps, HeadState> {
       let users: Array<User> = [];
       let currentUser: User = null;
       usersSnapshot.forEach((usersSnapshot: DataSnapshot) => {
-        let user: User = new User(usersSnapshot.key, usersSnapshot.val().authId, usersSnapshot.val().userNumber, usersSnapshot.val().name, usersSnapshot.val().moodPoints);
+        let user: User = User.fromSnapshot(usersSnapshot);
         users.push(user);
 
         if (this.userAuthId === usersSnapshot.val().authId) {
@@ -138,8 +138,6 @@ class Head extends React.Component<HeadProps, HeadState> {
           <EditableTitle title={this.state.boardTitle} updateTitle={(title: string) => this.updateTitle(title)}
                          size="large"/>
 
-          <br/>
-          <br/>
           <br/>
           <div>
             {this.getLinks()}

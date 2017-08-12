@@ -26,7 +26,7 @@ export class Card {
         cardSnapshot.val().isHidden);
   }
 
-  saveInReference(cardReference: Reference): void {
+  save(cardReference: Reference): void {
     cardReference.set({text: this.text, isEditing: this.isEditing, userKey: this.userKey, isHidden: this.isHidden});
   }
 
@@ -49,19 +49,36 @@ export class Column {
 
 }
 
+function getEmptyMood(): string {
+  let mood = [];
+  for (let i = 0; i < 7; i++) {
+    mood.push(0);
+  }
+  return mood.join(",");
+}
+
 export class User {
   key: string;
   authId: string;
   userNumber: number;
   name: string;
   moodPoints: string;
+  hideMood: boolean;
 
-  constructor(key: string, authId: string, userNumber: number, name: string, moodPoints: string) {
+  private constructor(key: string, authId: string, userNumber: number, name: string, moodPoints: string, hideMood: boolean) {
     this.key = key;
     this.authId = authId;
     this.userNumber = userNumber;
     this.name = name;
     this.moodPoints = moodPoints;
+    this.hideMood = hideMood;
+  }
+
+  static fromSnapshot(usersSnapshot: DataSnapshot): User {
+    let moodPoints = usersSnapshot.val().moodPoints ? usersSnapshot.val().moodPoints : getEmptyMood();
+    let hideMood = usersSnapshot.val().hideMood !== false;
+    return new User(usersSnapshot.key, usersSnapshot.val().authId, usersSnapshot.val().userNumber,
+        usersSnapshot.val().name, moodPoints, hideMood);
   }
 }
 
