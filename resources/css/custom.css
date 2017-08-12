@@ -12,6 +12,7 @@
 
 .card-other-hidden span {
   filter: blur(3px);
+  user-select: none;
 }
 
 .card-hidden {
