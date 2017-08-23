@@ -205,6 +205,10 @@ textarea {
   margin-left: 1em;
 }
 
+.editable-title-medium input[type="text"] {
+  height: 23px;
+}
+
 .editable-title-medium .editable-title-title, .editable-title-medium input[type="text"] {
   font-size: 13px;
   font-weight: bold;

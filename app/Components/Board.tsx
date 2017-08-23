@@ -160,9 +160,9 @@ class Board extends React.Component<BoardProps, BoardState> {
       />;
     });
 
-    return <div>
+    return <div className="row my-row">
 
-      <div className="row my-row">
+      <div>
         {this.props.columns.length < 6 &&
         <Button className="add-column-button" bsSize="xs" bsStyle="primary" onClick={() => this.openModalNewCol()}>
           Add column

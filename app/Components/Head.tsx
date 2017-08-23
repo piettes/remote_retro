@@ -108,8 +108,10 @@ class Head extends React.Component<HeadProps, HeadState> {
     this.boardRef.child("users").child(this.state.user.key).update({name: name});
   }
 
-  userListDisplay() {
-    return Array.from(this.state.userMap.values()).map((user: User) => {
+  otherUserListDisplay() {
+    return Array.from(this.state.userMap.values())
+    .filter((user: User) => this.state.user.authId !== user.authId)
+    .map((user: User) => {
       return <li key={user.key}
                  className={"card-color-" + user.userNumber}>{user.name === "" ? "Anonymous" : user.name}</li>
     });
@@ -134,7 +136,7 @@ class Head extends React.Component<HeadProps, HeadState> {
 
       <div className="row">
 
-        <div className="col-lg-6">
+        <div className="col-lg-5">
           <EditableTitle title={this.state.boardTitle} updateTitle={(title: string) => this.updateTitle(title)}
                          size="large"/>
 
@@ -145,15 +147,22 @@ class Head extends React.Component<HeadProps, HeadState> {
         </div>
 
 
-        <div className="col-lg-3">
+        <div className="col-lg-4">
 
-          Your name :
-          <EditableTitle title={this.state.user.name} updateTitle={(title: string) => this.updateUserName(title)}
-                         size="medium" placeHolder={"Enter you name here"}/>
+          <div className="progress progress-striped active">
+            <div className="progress-bar"/>
+          </div>
+
         </div>
 
         <div className="col-lg-3 user-list">
-          <ul>{this.userListDisplay()}</ul>
+          <ul>
+            <li className={"card-color-" + this.state.user.userNumber}>
+              <EditableTitle title={this.state.user.name} updateTitle={(title: string) => this.updateUserName(title)}
+                             size="medium" placeHolder={"Enter you name here"}/>
+            </li>
+            {this.otherUserListDisplay()}
+          </ul>
         </div>
 
       </div>
