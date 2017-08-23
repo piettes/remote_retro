@@ -74,7 +74,6 @@ class CardComponent extends React.Component<CardComponentProps, any> {
         <div className={"card-editable card-color-" + this.props.userMap.get(this.props.card.userKey).userNumber}>
           <div className="card-container">
             <textarea autoFocus onChange={(event: any) => this.onChangeText(event)} value={this.state.text}/>
-            <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
             <form className="form-inline">
               <span onClick={() => this.props.saveCard(this.state.text, this.state.isHidden)}
                     className="text-button">Save</span>
@@ -84,6 +83,7 @@ class CardComponent extends React.Component<CardComponentProps, any> {
                          onChange={() => this.onChangeHidden()}/> Hidden
                 </label>
               </div>
+              <i className="fa fa-trash card-remove-icon" aria-hidden="true" onClick={this.props.deleteCard}/>
             </form>
           </div>
         </div>

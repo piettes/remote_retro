@@ -39,7 +39,15 @@
   color: #e51c23;
 }
 
-.card-remove-icon, .card-edit-icon {
+.card-remove-icon {
+  cursor: pointer;
+  color: #FFFFFF;
+  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+.card-edit-icon {
   cursor: pointer;
   position: absolute;
   top: 8px;
