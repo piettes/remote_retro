@@ -28,7 +28,7 @@ class WelcomePage extends React.Component<WelcomePageProps, any> {
     let uuid = uuidv4();
 
     let boardRef: Reference = firebase.database().ref("boards/" + uuid);
-    boardRef.set({title: this.state.boardTitle});
+    boardRef.set({title: this.state.boardTitle, datum: Date.now()});
 
     this.addColumn(boardRef, "The Good");
     this.addColumn(boardRef, "The Bad");
